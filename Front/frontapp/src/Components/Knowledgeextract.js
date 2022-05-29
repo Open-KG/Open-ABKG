@@ -29,7 +29,6 @@ export default class Knowledgeextract extends Component {
     addData = async (e) => { await this.setState({ InputText: e.target.value }) }
     kgdraw = async () => {
         // 绘制图谱
-        console.log(this)
         this.Initgraph(this.state.data)
 
         // 发送请求命名实体识别
@@ -67,12 +66,6 @@ export default class Knowledgeextract extends Component {
     render() {
         return (
             <div>
-                <div >
-                    <h2>知识抽取</h2>
-                    <Button type="default" style={{ position: "absolute", left: "88%" }} >刷新</Button>
-                    <Button type="default" style={{ position: "absolute", left: "95%" }}>返回</Button>
-                </div>
-
                 <div style={{ marginTop: "50px" }}>
                     <h2 style={{ fontWeight: "bold" }}>知识抽取</h2>
                     <div style={{ display: "inline-block", width: "50%", marginTop: "10px" }}>
