@@ -2,15 +2,17 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.container {
+  width: 1000px;
+  height: 1000px;
+  border: 1px solid #2c3e50;
+  border-radius: 8px;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #154360 repeating-linear-gradient(30deg,
+      hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, .1) 15px,
+      transparent 0, transparent 30px);
 }
 
 .App-header {
@@ -32,6 +34,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

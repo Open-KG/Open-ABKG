@@ -1,11 +1,23 @@
 
-import React, { Component } from 'react'
+import './App.css';
+import "../node_modules/antd/dist/antd.css";
+import React from 'react';
+import NavBar from './Components/NavBar';
+import { BackTop } from 'antd'
 
-export default class App extends Component {
+class App extends React.Component {
   render() {
     return (
-      <div>App</div>
-    )
+      <div>
+        <div>
+          <NavBar />
+          <BackTop style={{ Color: "skyblue" }} />
+        </div>
+      </div>
+
+    );
   }
 }
+
+export default App;
 
