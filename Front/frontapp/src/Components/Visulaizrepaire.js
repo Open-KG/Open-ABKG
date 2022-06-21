@@ -55,10 +55,6 @@ export default class Visulaizrepaire extends Component {
         if (e.target.className === 'ant-input amount') {
             limit = e.target.value
         }
-
-    }
-
-    ConstractGraph = async () => {
         // 发送请求，获得节点信息
         const nodes = {
             method: 'GET',
@@ -66,38 +62,23 @@ export default class Visulaizrepaire extends Component {
         }
         await axios(nodes).then(
             response => {
-                // console.log(response.data)
+
                 const data = response.data.data
+                console.log(data)
+                data.links = []
                 data.width = 1000
                 data.height = 1000
                 data.colorList = ['#FD7623', '#3388B1', '#D82952', '#F3D737', '#409071', '#D64E52']
-                // console.log(data)
                 return this.setState({
                     nodeData: data
                 })
             }
         )
 
-        // 绘制图谱前删除其余图谱
-        const removechild = document.getElementsByClassName('svgs')
-        console.log(removechild)
-        console.log(removechild.length)
-        let amounts = removechild.length
-        const parentnodes = document.getElementsByClassName('container')
-        for (var i = 0; i < amounts; i++) {
-            parentnodes[0].removeChild(removechild[0])
-            console.log(1)
-        }
-
-        // 绘制图谱
-        this.Initgraph(this.state.nodeData)
-    }
-
-    multiConstractGraph = async () => {
         // 发送多跳查询，获得节点信息
         const getMultiJumpQuery = {
             method: 'GET',
-            url: `http://124.221.220.105:8081/graph/getMultiJumpQuery?name=${name}&limit=${limit}&jump=${jump}`
+            url: `http://124.221.220.105:8081/graph/getMultiJumpQuery?name=${name}&jump=${jump}`
         }
         await axios(getMultiJumpQuery).then(
             response => {
@@ -114,17 +95,34 @@ export default class Visulaizrepaire extends Component {
                 })
             }
         )
+
+    }
+
+    ConstractGraph = async () => {
         // 绘制图谱前删除其余图谱
         const removechild = document.getElementsByClassName('svgs')
-        console.log(removechild)
-        console.log(removechild.length)
-        let amounts = removechild.length
-        const parentnodes = document.getElementsByClassName('container')
-        for (var i = 0; i < amounts; i++) {
-            parentnodes[0].removeChild(removechild[0])
-            console.log(1)
+        if (removechild !== null) {
+            let amounts = removechild.length
+            const parentnodes = document.getElementsByClassName('container')
+            for (var i = 0; i < amounts; i++) {
+                parentnodes[0].removeChild(removechild[0])
+            }
         }
+        // 绘制图谱
+        this.Initgraph(this.state.nodeData)
+    }
 
+    multiConstractGraph = async () => {
+
+        // 绘制图谱前删除其余图谱
+        const removechild = document.getElementsByClassName('svgs')
+        if (removechild !== null) {
+            let amounts = removechild.length
+            const parentnodes = document.getElementsByClassName('container')
+            for (var i = 0; i < amounts; i++) {
+                parentnodes[0].removeChild(removechild[0])
+            }
+        }
         // 绘制多跳图谱
         this.Initgraph(this.state.multiData)
     }
@@ -132,15 +130,13 @@ export default class Visulaizrepaire extends Component {
 
         // 绘制图谱前删除其余图谱
         const removechild = document.getElementsByClassName('svgs')
-        console.log(removechild)
-        console.log(removechild.length)
-        let amounts = removechild.length
-        const parentnodes = document.getElementsByClassName('container')
-        for (var i = 0; i < amounts; i++) {
-            parentnodes[0].removeChild(removechild[0])
-            console.log(1)
+        if (removechild !== null) {
+            let amounts = removechild.length
+            const parentnodes = document.getElementsByClassName('container')
+            for (var i = 0; i < amounts; i++) {
+                parentnodes[0].removeChild(removechild[0])
+            }
         }
-
         // 绘制图谱
         this.Initgraph(this.state.NLPQuery)
     }
@@ -166,6 +162,7 @@ export default class Visulaizrepaire extends Component {
             }
         )
     }
+
     render() {
         const { formLayout, formLayout2, formLayout3 } = this.state
         return (
@@ -240,6 +237,7 @@ Visulaizrepaire.prototype.Initgraph = (data) => {
     const svg = d3.select(".container")
         // 添加svg画布
         .append('svg')
+        .attr('class', 'svgs')
         // 给画布添加颜色
         .attr("fill", "red")
         .attr("viewBox", [0, 0, data.width, data.height])
