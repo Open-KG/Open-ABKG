@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Input, Card } from 'antd';
+import ReactDOM from 'react-dom/client';
 import * as d3 from "d3";
 import axios from 'axios';
 import './KG.css'
@@ -7,89 +8,169 @@ const { TextArea } = Input;
 export default class Knowledgeextract extends Component {
     state = {
         InputText: "",
-        Kgner: "",
-        KeyWord: "",
+        Kgner: [],
+        KeyWord: [],
         data: {
-            nodes: [
-                { "id": "Myriel", "group": 1 }, { "id": "Napoleon", "group": 2 }, { "id": "Mlle.Baptistine", "group": 3 },
-                { "id": "Mme.Magloire", "group": 1 }, { "id": "CountessdeLo", "group": 7 }, { "id": "Geborand", "group": 5 },
-                { "id": "Champtercier", "group": 3 }, { "id": "Cravatte", "group": 1 }, { "id": "Count", "group": 2 },
-            ],
-            links: [
-                { "source": "Myriel", "target": "Napoleon", "value": 6, "relation": "love" }, { "source": "Myriel", "target": "Mlle.Baptistine", "value": 6, "relation": "love" },
-                { "source": "Myriel", "target": "Mme.Magloire", "value": 6, "relation": "love" }, { "source": "Myriel", "target": "CountessdeLo", "value": 6, "relation": "love" },
-                { "source": "Myriel", "target": "Geborand", "value": 4, "relation": "love" }, { "source": "Myriel", "target": "Champtercier", "value": 6, "relation": "love" },
-                { "source": "Myriel", "target": "Cravatte", "value": 5, "relation": "love" }, { "source": "Myriel", "target": "Count", "value": 7, "relation": "love" },
-            ],
+            nodes: [],
+            links: [],
             width: 1000,
             height: 1000,
             colorList: ['#FD7623', '#3388B1', '#D82952', '#F3D737', '#409071', '#D64E52'],
         }
     }
-    addData = async (e) => { await this.setState({ InputText: e.target.value }) }
-    kgdraw = async () => {
-        // 绘制图谱
-        this.Initgraph(this.state.data)
 
+    // 获得输入框中的数据并且获得图谱数据
+    addData = async (e) => {
+        await this.setState({ InputText: e.target.value })
+    }
+
+    ConstractGraph = async () => {
+        // 获得图谱数据
+        const graphdatas = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+            data: this.state.InputText,
+            url: '  http://124.221.220.105:8081/nlp/graph'
+        }
+        await axios(graphdatas).then(
+            response => {
+                // console.log(response)
+                const graphdata = {}
+                graphdata.nodes = response.data.data.nodes
+                graphdata.links = response.data.data.links
+                graphdata.width = 1000
+                graphdata.height = 1000
+                graphdata.colorList = ['#FD7623', '#3388B1', '#D82952', '#F3D737', '#409071', '#D64E52']
+                console.log(graphdata)
+                return this.Initgraph(graphdata)
+                // 逻辑存在问题
+                // return document.getElementById('svgs') === null ? this.Initgraph(graphdata) : 1
+
+            }
+        )
+    }
+
+    // 命名实体识别
+    Recentity = async () => {
         // 发送请求命名实体识别
         const entity = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=UTF-8' },
             data: this.state.InputText,
-            url: 'http://124.221.220.105:8081/api/KG/entity'
+            url: ' http://124.221.220.105:8081/nlp/entity'
         }
         await axios(entity).then(
             response => {
-                console.log(response.data)
+                // console.log(response.data)
                 const Kgners = response.data.data
-                return this.setState({ Kgner: Kgners })
+                console.log(Kgners)
+                const arr = []
+                let str
+                for (let i = 0; i < Kgners.length; i++) {
+                    str = `{("产品": ${Kgners[i].entity}),          ("类别": ${Kgners[i].type})}\n `
+                    arr[i] = str
+                    console.log(typeof (str))
+                }
+                console.log(arr)
+                return this.setState({
+                    Kgner: arr
+                })
             }
         )
 
+    }
+
+    // 关系抽取
+    GetRelation = async () => {
         // 发送请求关系抽取
         const relation = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=UTF-8' },
             data: this.state.InputText,
-            url: 'http://124.221.220.105:8081/api/KG/relation'
+            url: ' http://124.221.220.105:8081/nlp/relation'
         }
         await axios(relation).then(
             response => {
-                const KeyWord = response.data.data
+                const KeyWord = response.data.data[0]
                 console.log(KeyWord)
-                return this.setState({ KeyWord: KeyWord })
+                const arr = []
+                let str
+                for (let i = 0; i < KeyWord.length; i++) {
+                    str = `{("头实体": ${KeyWord[i].head}), ("关系":${KeyWord[i].relation}),("尾实体": ${KeyWord[i].tail})}\n `
+                    arr[i] = str
+                    // console.log(typeof (str))
+                }
+                // console.log(arr)
+                return this.setState({
+                    KeyWord: arr
+                })
             }
         )
+    }
+
+    // 清除数据
+    RemoteData = async () => {
+        console.log(this)
+        this.setState({
+            InputText: '',
+            Kgner: [],
+            KeyWord: [],
+            data: {
+                "nodes": [],
+                "links": [],
+                width: 1000,
+                height: 1000,
+                colorList: ['#FD7623', '#3388B1', '#D82952', '#F3D737', '#409071', '#D64E52'],
+            }
+        })
+
+        const removechild = document.getElementsByClassName('svgs')
+        console.log(removechild)
+        console.log(removechild.length)
+        let amounts = removechild.length
+        const parentnodes = document.getElementsByClassName('container')
+        for (var i = 0; i < amounts; i++) {
+            parentnodes[0].removeChild(removechild[0])
+            console.log(1)
+        }
+
 
     }
 
     render() {
         return (
             <div>
+                <div style={{ marginTop: "10px" }} ><h2>知识抽取</h2></div>
+                <hr />
                 <div style={{ marginTop: "50px" }}>
                     <h2 style={{ fontWeight: "bold" }}>知识抽取</h2>
                     <div style={{ display: "inline-block", width: "50%", marginTop: "10px" }}>
                         <h3 >
                             <span style={{ fontWeight: "bold" }} > 输入</span>
-                            <Button type="primary" shape="round" style={{ left: "45%" }} onClick={this.kgdraw}>分析</Button>
-                            <Button type="primary" shape="round" style={{ left: "55%" }} > 清空</Button>
+                            <Button type="primary" shape="round" style={{ left: "80%" }} onClick={this.RemoteData}> 清空</Button>
                         </h3>
-                        <TextArea rows={4} onChange={this.addData} placeholder={'2015年凭借专辑《米·闪》获得第26届台湾金曲奖最佳国语男歌手奖 [7]  。2016年举行“Another Eason'} />
+                        <TextArea rows={4} onChange={this.addData} value={this.state.InputText} />
                     </div>
                     <div style={{ display: "inline-block", width: "50%" }}>
                         <h3>
                             <span style={{ fontWeight: "bold" }}> 实体识别结果</span>
-                            <Button type="primary" shape="round" style={{ left: "75%" }} >导出</Button>
+                            <Button type="primary" shape="round" style={{ left: "75%" }} onClick={this.Recentity} >识别</Button>
                         </h3>
                         <TextArea rows={4} value={this.state.Kgner} ></TextArea>
                     </div>
                 </div>
                 <div style={{ marginTop: "50px" }}>
-                    <h2 style={{ fontWeight: "bold" }}>关系抽取</h2>
+                    <h2 style={{ fontWeight: "bold" }}>
+                        关系抽取
+                        <Button type="primary" shape="round" style={{ left: "88%" }} onClick={this.GetRelation}>抽取</Button>
+                    </h2>
                     <TextArea rows={4} value={this.state.KeyWord} />
                 </div>
                 <div style={{ marginTop: "50px" }}>
-                    <h2 className="知识图谱" style={{ fontWeight: "bold" }}>知识图谱结果</h2>
+                    <h2 className="知识图谱" style={{ fontWeight: "bold" }}>
+                        知识图谱结果
+                        <Button type="primary" shape="round" style={{ left: "70%" }} onClick={this.ConstractGraph}>构建</Button>
+                    </h2>
                     <Card className='container' ></Card>
                 </div>
 
@@ -119,6 +200,7 @@ Knowledgeextract.prototype.Initgraph = (data) => {
     const svg = d3.select(".container")
         // 添加svg画布
         .append('svg')
+        .attr('class', 'svgs')
         // 给画布添加颜色
         .attr("fill", "red")
         .attr("viewBox", [0, 0, data.width, data.height])
@@ -179,10 +261,10 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         .data(links, function (d) {
             // console.log(typeof d.source)
             if (typeof (d.source) === 'object') {
-                return d.source.id + "_" + d.relation + "_" + d.target.id
+                return d.source.name + "_" + d.label + "_" + d.target.name
             }
             else {
-                return d.source + "_" + d.relation + "_" + d.target
+                return d.source + "_" + d.label + "_" + d.target
             }
         })
         // 创建path标签
@@ -199,10 +281,10 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         .attr("id", function (d) {
             // console.log(d)
             if (typeof (d.source) === 'object') {
-                return d.source.id + "_" + d.relation + "_" + d.target.id
+                return d.source.name + "_" + d.label + "_" + d.target.name
             }
             else {
-                return d.source + "_" + d.relation + "_" + d.target
+                return d.source + "_" + d.label + "_" + d.target
             }
         })
 
@@ -211,7 +293,7 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         .selectAll("text")
         .data(links, function (d) {
             if (typeof (d.source) === 'object') {
-                return d.source.id + "_" + d.relation + "_" + d.target.id
+                return d.source.name + "_" + d.label + "_" + d.target.name
             }
             else {
                 return d.source + "_" + d.relation + "_" + d.target
@@ -224,7 +306,7 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         // 设置颜色
         .style('fill', 'white')
         // 设置字体大小
-        .style('font-size', '25px')
+        .style('font-size', '15px')
         // 设置字体的粗细
         .style('font-weight', 'middle');
 
@@ -232,11 +314,11 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         // text标签下面接上textpath标签
         .append('textPath')
         // 连接到link标签，以href作为连接，id为： d.source.id + "_" + d.relation + "_" + d.target.id
-        .attr('href', d => "#" + d.source.id + "_" + d.relation + "_" + d.target.id)
+        .attr('href', d => "#" + d.source.name + "_" + d.label + "_" + d.target.name)
         .attr('startOffset', '50%')
         // 文本内容
         .text(d => {
-            return d.relation
+            return d.label
         });
     // console.log(link._groups[0][0])
 
@@ -244,7 +326,7 @@ Knowledgeextract.prototype.Initgraph = (data) => {
     const node = g.append('g')
         .selectAll('circle')
         // 添加数据
-        .data(nodes, d => d.id)
+        .data(nodes, d => d.name)
         // 添加circle元素标签
         .join("circle")
         .attr("r", 30)
@@ -256,14 +338,14 @@ Knowledgeextract.prototype.Initgraph = (data) => {
         .call(drag(simulation))
 
     node.append("title")
-        .text(d => d.id);
+        .text(d => d.name);
 
     // 设置节点文本的信息
     const nodesName = g.append('g')
         .selectAll("text")
         .data(nodes)
         .join("text")
-        .text(d => d.id)
+        .text(d => d.name)
         .attr("dx", function () {
             // 获得节点字的长度
             console.log(this.getBoundingClientRect().width)
