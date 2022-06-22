@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# 基本介绍
+本平台基于Neo4j图数据库进行数据存储，使用Antd组件，结合react前端框架搭建，轻量快捷，对于用户的查询需求能做到迅速及时的响应。
+          
+          
+虽然图数据库的数据操作对于非专业人士有困难，但是本平台
+用户友好，即使是对图数据库不了解的人员也可以顺利使用，目前已实现知识抽取以及基于图谱的现有节点和边进行查询。
+          
+# 本地部署与运行
+          
+本地进行项目部署时请确保已在本地安装node.js环境，没有安装？<a href='http://nodejs.cn/'>点此</a>前往安装。在本平台
+              项目目录下使用命令`npm install`安装相关的依赖包
+          
+在本地安装好相关的环境以及相关依赖之后就可以运行了，同样地，在项目目录下使用命令`npm start`或者`yarn start`(使用yarn要确保本机安装了yarn)
+          
+          
+项目启动成功后，会默认运行在本机3000端口，可以通过浏览器访问`http://127.0.0.1:3000`
+          
+<Divider />
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 各模块介绍
+##  知识抽取
+          
+知识抽取模块通过在输入框中输入内容，通过对应的功能按钮实现对应的功能响应
+          
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 输入
+          
+在输入框中输入需要进行信息抽取和展示的文字信息；若要删除文本框中的内容和其他展示内容，点击清空按钮。
+          
+### 实体识别结果
+          
+在输入框中内容确定后，点击识别按钮，会将结果展示在实体识别结果的文本域中
+          
+### 关系抽取
+          
+在输入框中内容确定后，点击抽取按钮，会将抽取的三元组结果展示在知识抽取的文本域中
+          
+### 知识图谱结果
+在输入框中内容确定后，点击构建按钮，会将抽取的三元组结果以知识图谱的形式展示绘图区域
+          
+        
+          
+          
+## 运维知识图谱可视化
+          
+有待开发
+          
