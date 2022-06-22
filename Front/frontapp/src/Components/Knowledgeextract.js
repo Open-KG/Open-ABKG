@@ -5,6 +5,8 @@ import * as d3 from "d3";
 import axios from 'axios';
 import './KG.css'
 const { TextArea } = Input;
+const controller = new AbortController();
+let isSending = false
 export default class Knowledgeextract extends Component {
     state = {
         InputText: "",
@@ -25,6 +27,8 @@ export default class Knowledgeextract extends Component {
     }
 
     ConstractGraph = async () => {
+
+        if (isSending) controller.abort();
         // 获得图谱数据
         const graphdatas = {
             method: 'POST',
@@ -34,7 +38,6 @@ export default class Knowledgeextract extends Component {
         }
         await axios(graphdatas).then(
             response => {
-                // console.log(response)
                 const graphdata = {}
                 graphdata.nodes = response.data.data.nodes
                 graphdata.links = response.data.data.links
