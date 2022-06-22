@@ -152,7 +152,7 @@ export default class Knowledgeextract extends Component {
                             <span style={{ fontWeight: "bold" }} > 输入</span>
                             <Button type="primary" shape="round" style={{ left: "80%" }} onClick={this.RemoteData}> 清空</Button>
                         </h3>
-                        <TextArea rows={4} onChange={this.addData} value={this.state.InputText} />
+                        <TextArea rows={4} onChange={this.addData} value={this.state.InputText} placeholder={"阿莱德目前的零部件产品主要可分为三大类，分别为射频与透波防护器件、EMI及IP防护器件和电子导热散热器件。"} />
                     </div>
                     <div style={{ display: "inline-block", width: "50%" }}>
                         <h3>
